@@ -113,10 +113,10 @@ class ModelValidationView(object):
 
 
     def get_formfield_id(self, key, formfields):
-        formfield = formfields[key]
         if '__all__' == key:
             return key
-        elif not isinstance(formfield.field, forms.FileField):
+        formfield = formfields[key]
+        if not isinstance(formfield.field, forms.FileField):
             html_id = formfield.field.widget.attrs.get('id') or formfield.auto_id
             html_id = formfield.field.widget.id_for_label(html_id)
             return html_id
