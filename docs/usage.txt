@@ -31,7 +31,8 @@ And then in the template in which you are displaying the form, you should add::
     <script type="text/javascript">
         $(function()    {
             $('#form').validate('{% url contact_form_validate %}', {type: 'ul', fields: ['email'], dom: $('#id_email'), event: 'keyup'});
-            $('#form').validate('{% url contact_form_validate %}', {type: 'ul'});
+            $('#form').validate('{% url contact_form_validate %}', {type: 'ul', fields: ['email'], dom: $('#id_email'), event: 'keyup'});
+            $('#form').validate('{% url contact_form_validate %}', {type: 'ul', event: 'keyup', untilCurrent: true});
         });
     </script>
 
