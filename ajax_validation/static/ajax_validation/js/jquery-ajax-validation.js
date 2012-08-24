@@ -106,6 +106,9 @@
                     data += '&' + $.param({fields: settings.fields});
                 } else if (settings.untilCurrent) {
                     var current = ev.originalEvent.explicitOriginalTarget;
+                    if (current.nodeName.toLowerCase() === "option") {
+                        current = $(current).parents("select")[0];
+                    }
                     var f = $(current).parents("form");
                     var find = false;
                     var fieldsName = []
