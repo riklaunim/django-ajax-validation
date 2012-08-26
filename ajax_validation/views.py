@@ -141,10 +141,9 @@ class ModelValidationView(object):
             data.update(valid=True, **save_fun(request, form))
         else:
             errors, formfields = self.get_form_error_and_formfields(form)
-
             # if fields have been specified then restrict the error list
-            if request.POST.getlist('fields'):
-                fields = request.POST.getlist('fields') + ['__all__']
+            if request.POST.getlist('fields[]'):
+                fields = request.POST.getlist('fields[]') + ['__all__']
                 errors = dict((key, val) for key, val in errors.iteritems() if key in fields)
 
             final_errors = {}

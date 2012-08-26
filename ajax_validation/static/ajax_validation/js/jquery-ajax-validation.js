@@ -92,18 +92,38 @@
             fields: false,
             dom: this,
             event: 'submit',
-            submitHandler: null
+            submitHandler: null,
+            untilCurrent: false
         }, settings);
 
         return this.each(function() {
             var form = $(this);
-            settings.dom.bind(settings.event, function()  {
+            settings.dom.bind(settings.event, function(ev)  {
                 var status = false;
                 var responseData = {};
                 var data = form.serialize();
                 if (settings.fields) {
                     data += '&' + $.param({fields: settings.fields});
+                } else if (settings.untilCurrent) {
+                    var current = ev.originalEvent.explicitOriginalTarget;
+                    if (current.nodeName.toLowerCase() === "option") {
+                        current = $(current).parents("select")[0];
+                    }
+                    var f = $(current).parents("form");
+                    var find = false;
+                    var fieldsName = []
+                    var fields = f.find("input, select, textarea").each(function () {
+                        if (!find) {
+                            fieldsName[fieldsName.length] = $(this).attr("name");
+                        } 
+                        if (this === current) {
+                            find = true;
+                            return;
+                        }
+                    });
+                    data += '&' + $.param({fields: fieldsName});
                 }
+                var that = this;
                 $.ajax({
                     async: false,
                     data: data,
