@@ -105,7 +105,6 @@
             submitHandler: null,
             untilCurrent: false,
             removeErrors: removeErrors,
-            errorRemover: errorRemover,
             injectErrors: injectErrors,
             getUntilCurrent: getUntilCurrent
         }, settings);
