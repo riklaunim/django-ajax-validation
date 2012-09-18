@@ -84,6 +84,16 @@
     errorInjector[type](form, data);
     }
 
+    function getUntilCurrent(ev, nodeNames) {
+        var current = ev.originalEvent.explicitOriginalTarget;
+        if (current.nodeName.toLowerCase() === "option") {
+            current = $(current).parents("select")[0];
+        }
+         if (nodeNames.split(", ").indexOf(current.nodeName.toLowerCase()) === -1) {
+            return false;
+        }
+        return current;
+    }
 
     $.fn.validate = function(url, settings) {
         settings = $.extend({
@@ -93,7 +103,10 @@
             dom: this,
             event: 'submit',
             submitHandler: null,
-            untilCurrent: false
+            untilCurrent: false,
+            removeErrors: removeErrors,
+            injectErrors: injectErrors,
+            getUntilCurrent: getUntilCurrent
         }, settings);
 
         return this.each(function() {
@@ -102,17 +115,18 @@
                 var status = false;
                 var responseData = {};
                 var data = form.serialize();
+                var nodeNames = "input, select, textarea";
                 if (settings.fields) {
                     data += '&' + $.param({fields: settings.fields});
                 } else if (settings.untilCurrent) {
-                    var current = ev.originalEvent.explicitOriginalTarget;
-                    if (current.nodeName.toLowerCase() === "option") {
-                        current = $(current).parents("select")[0];
+                    var current = settings.getUntilCurrent(ev, nodeNames);
+                    if (!current) {
+                        return current;
                     }
                     var f = $(current).parents("form");
                     var find = false;
                     var fieldsName = []
-                    var fields = f.find("input, select, textarea").each(function () {
+                    var fields = f.find(nodeNames).each(function () {
                         if (!find) {
                             fieldsName[fieldsName.length] = $(this).attr("name");
                         } 
@@ -135,12 +149,12 @@
                     success: function(data, textStatus) {
                         responseData = data;
                         status = data.valid;
-                        removeErrors(form, settings.type, settings.fields);
+                        settings.removeErrors(form, settings.type, settings.fields);
                         if (!status)    {
                             if (settings.callback)  {
                                 settings.callback(data, form);
                             } else {
-                                injectErrors(settings.type, form, data);
+                                settings.injectErrors(settings.type, form, data);
                             }
                         }
                     },
