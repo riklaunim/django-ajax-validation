@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.conf.urls.defaults import url as django_url
+from django.conf.urls import url as django_url
 from django.core.exceptions import ImproperlyConfigured
 from django.forms.formsets import BaseFormSet
 from django.forms.models import modelform_factory
